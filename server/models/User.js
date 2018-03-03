@@ -32,7 +32,7 @@ const User = new Schema(
 User.methods.setPassword = function(password){
     if(password) {
         this.salt = crypto.randomBytes(16).toString('hex');
-        this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64,'base64').toString('hex');
+        this.hash = crypto.pbkdf2Sync(password, new Buffer(this.salt, 'binary'), 1000, 64).toString('hex');
     }
 };
 
@@ -40,7 +40,7 @@ User.methods.validPassword = function(password){
     console.log("Password")
     console.log(password);
     console.log(this.salt);
-    let hash = crypto.pbkdf2Sync(password,this.salt,1000,64,'base64').toString('hex');
+    let hash = crypto.pbkdf2Sync(password,new Buffer(this.salt, 'binary') , 1000,64).toString('hex');
     return this.hash === hash;
 };
 
