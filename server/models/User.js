@@ -1,6 +1,7 @@
 const mongoose  = require('mongoose');
 const Schema    = mongoose.Schema;
 const crypto    = require('crypto');
+const jwt       = require('jsonwebtoken');
 
 const User = new Schema(
     {
@@ -39,5 +40,21 @@ User.methods.validPassword = function(password){
     let hash = crypto.pbkdf2Sync(password,this.salt,1000,64).toString('hex');
     return this.hash === hash;
 };
+
+User.methods.generateJwt = function(){
+    let expiry = new Date();
+    expiry.setDate(expiry.getDate() + 7);
+
+    let token = jwt.sign({
+        _id: this._id,
+        first_name: this.first_name,
+        last_name: this.last_name,
+        email: this.email,
+        exp: parseInt(expiry.getTime() / 1000)
+    } , process.env.JWT_SECRET);
+
+    return token;
+};
+
 
 module.exports = mongoose.model('User', User);

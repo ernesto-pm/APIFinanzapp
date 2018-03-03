@@ -8,4 +8,7 @@ router.route('/user/:id')
 router.route('/user')
     .post(jsonParser, UserController.createUser);
 
+router.route('/user/login')
+    .post(jsonParser, UserController.login);
+
 module.exports = router;

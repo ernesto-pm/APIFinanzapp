@@ -29,3 +29,21 @@ exports.createUser = function(req, res) {
     })
 
 };
+
+
+exports.login = function (req, res) {
+    if(!req.body.email)         return res.status(400).send({err: "No email provided"});
+    if(!req.body.password)      return res.status(400).send({err: "No password provided"});
+
+    User.findOne({email: req.body.email}, function(err, user){
+        if(err) return res.status(500).send({err: err});
+        if(!user) return res.status(404).send({err: "No user found with that email"});
+
+        if(!user.validPassword(req.body.password)) {
+            return res.status(401).send({err: "Incorrect password"});
+        } else {
+            return res.status(200).send({token: user.generateJwt()});
+        }
+
+    })
+};
