@@ -37,6 +37,9 @@ User.methods.setPassword = function(password){
 };
 
 User.methods.validPassword = function(password){
+    console.log("Password")
+    console.log(password);
+    console.log(this.salt);
     let hash = crypto.pbkdf2Sync(password,this.salt,1000,64,'base64').toString('hex');
     return this.hash === hash;
 };
